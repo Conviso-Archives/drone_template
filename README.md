@@ -1,4 +1,4 @@
 drone_template
 ==============
 
-Template for conviso csc drones
+Template code for new drones
