@@ -1,55 +1,51 @@
 require 'rexml/document'
 
+# http://www.germane-software.com/software/rexml/docs/tutorial.html
+
 module Parse
   module DOM
     class Tool
       def parse_file(xml_file)
         struct = nil
         begin
-	        fd=File.new(xml_file)
-	        doc = REXML::Document.new fd
-	        $rows=doc.root
-	        struct = __extract_xml()
-	      rescue Exception => e
-	        raise e
+	        struct = __extract_xml(xml_file)
+        rescue Exception => e
+          raise Exception.new 'XML with invalid format'
         end
         return struct
       end
      
      
       private
-      # TODO: Refatorar esse metodo
-      def __extract_xml()
-        begin
-          output = {}
-          output[:issues] = []
-          duration=$rows.elements['//system/delta_time'].text
-          toolname=$rows.elements['//title'].text
-          start=$rows.elements['//start_datetime'].text
+      def __extract_xml(xml_file)
+        doc = REXML::Document.new File.new(xml_file)
+        output = {}
+        output[:issues] = []
+        duration=doc.elements['//system/delta_time'].text
 
-          path="//arachni_report/issues/issue"
-          output[:issues] = $rows.elements.collect(path) do |row|  
-            {
-              :name => row.elements['name'].text.to_s,
-              :url =>  row.elements['url'].text.to_s,
-              :description => row.elements['description'].text.to_s,
-              :reference => row.elements['references'].elements.collect {|e| "#{e.attributes['name']} - #{e.attributes['url']}" }.join("\n"),
-              :severity => row.elements['severity'].text.to_s,
-              :_hash => row.elements['_hash'].text.to_s,
-              :cwe => row.elements['cwe'].nil? ? '' : row.elements['cwe'].text.to_s,
-              :remedy_guidance => row.elements['remedy_guidance'].nil? ? '' : row.elements['remedy_guidance'].text.to_s,
-              :remedy_code => row.elements['remedy_code'].nil? ? '' : row.elements['remedy_code'].text.to_s,
-              :cwe_url => row.elements['cwe_url'].nil? ? '' : row.elements['cwe_url'].text.to_s
-            }
-          end
-          output[:duration]=duration
-          output[:start_datetime]=start
-          output[:toolname]=toolname
-          # eliminando repetidos
-          output[:issues].uniq!
-        rescue Exception => e
-          raise Exception.new 'XML with invalid format'
-        end 
+        toolname=doc.elements['//title'].text
+        start=doc.elements['//system/start_datetime'].text
+
+        path="//report/issues/issue"
+        output[:issues] = doc.elements.collect(path) do |issue|  
+          {
+            :name => issue.elements['name'].text.to_s,
+            :url =>  issue.elements['url'].text.to_s,
+            :description => issue.elements['description'].text.to_s,
+            :reference => issue.elements['url'].text.to_s,
+            :severity => issue.elements['severity'].text.to_s,
+            :_hash => issue.elements['_hash'].text.to_s,
+            :cwe => issue.elements['cwe'].text.to_s,
+            :cwe_url => issue.elements['cwe_url'].nil? ? '' : issue.elements['cwe_url'].text.to_s
+          }
+        end
+        output[:duration]=duration
+        output[:start_datetime]=start
+        output[:toolname]=toolname
+
+        # eliminando repetidos
+        output[:issues].uniq!
+        
         return output
       end
       
