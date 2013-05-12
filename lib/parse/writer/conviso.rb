@@ -10,7 +10,7 @@ module Parse
 
         xml.scan do |s|
           s.header do |h|
-            h.tool 'arachni'
+            h.tool config['tool_name']
             h.scope config['client']
             h.project config['project_id']
             h.timestamp Time.now

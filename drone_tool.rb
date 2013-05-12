@@ -88,7 +88,6 @@ module Drone
       end
     end
     
-    
     private
     def __sent_structure(tool_structure, source)
       # EXECUTES ALL BULK ANALYSES
@@ -101,7 +100,21 @@ module Drone
         @analyses.each {|a| issue = a.analyse(issue)}
         
         # SEND THE MSG WITH THE ISSUE
-	      @comm.send_msg(Parse::Writer::Conviso.build_xml(issue, source))
+        source['tool_name'] = @config['tool_name']
+        ret = @comm.send_msg(Parse::Writer::Conviso.build_xml(issue, source))
+        
+        if @config['xmpp']['importer_address'] =~ /validator/
+          sleep 2
+          msg = @comm.receive_msg
+          ret = false
+          if msg =~ /[OK]/
+            @debug.info('VALIDATOR - THIS MESSAGE IS VALID')
+          else
+            @debug.info('VALIDATOR - THIS MESSAGE IS INVALID')
+          end
+        end
+        
+        ret
       end
       
       # JUST IN CASE THE RESPONSE ARRAY COMES EMPTY
