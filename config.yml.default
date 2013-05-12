@@ -1,12 +1,12 @@
-plugin_name: TOOL_NAME
-log_file: [LOG_FILE_PATH] # EX: log/tool.log
+tool_name: [TOOL_NAME]
+
+# EX: log/tool.log
+log_file: [LOG_FILE_PATH]
 
 sources:
-- client: [CSC_CLIENT_ID]
-  project_id: [CSC_PROJECT_ID]
+- project_id: [CSC_PROJECT_ID]
   input_directory: [OUTPUT_XML_PATH_FOR_THIS_SCOPE]
-- client: [CSC_CLIENT_ID]
-  project_id: [CSC_PROJECT_ID]
+- project_id: [CSC_PROJECT_ID]
   input_directory: [OUTPUT_XML_PATH_FOR_THIS_SCOPE]
 
 xmpp:
