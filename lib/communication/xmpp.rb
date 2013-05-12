@@ -10,17 +10,25 @@ module Communication
       @config = config
       @debug = debug
       @cl = Jabber::Client.new(Jabber::JID.new(@config['xmpp']['username']))
+      
+      @msg_queue = []
+
+      @cl.add_message_callback do |m|
+        if m.type != :error && m.body.to_s.size > 1
+          @msg_queue << m.body
+        end
+      end
+      
       @active = false
       __connenct()
     end
 
     # TODO: Fazer com que esse metodo apenas receba uma string com um payload
-    def send_msg(issue = '', config = nil)
+    def send_msg(payload = nil)
       @debug.info('Sending message ...')
-      return true if issue.empty?
       return false if !self.active?
       begin
-        msg = Jabber::Message.new(@config['xmpp']['importer_address'], build_xml(issue, config))
+        msg = Jabber::Message.new(@config['xmpp']['importer_address'], payload)
         msg.type = :normal
         @cl.send(msg)
       rescue
@@ -30,6 +38,10 @@ module Communication
 
       sleep 0.8
       return true
+    end
+    
+    def receive_msg
+      (1..@msg_queue.size).to_a.collect{@msg_queue.pop}.join('_')
     end
 
     def active?
