@@ -1,4 +1,4 @@
-Drone Template (Conviso Application Security)
+Drone Template
 =================================================
 
 This project aims help developers to create, test and deploy a new Drone (Agent).
@@ -6,7 +6,7 @@ This project aims help developers to create, test and deploy a new Drone (Agent)
 
 [I] What is a Drone?
 
-A Drone is a software agent [1]. In our context, of testing software applications, our drones aim to automate the repetitive work before executed by a human analyst like: scanning, monitoring and/or attack software application systems.
+A Drone is a software agent (1). In our context, of testing software applications, our drones aim to automate the repetitive work before executed by a human analyst like: scanning, monitoring and/or attack software application systems.
 
 [II] Drone Objectives
 
@@ -19,6 +19,7 @@ A Drone has three main objectives:
 
 [III] Conviso Framework Architecture
 
+```
 -------------------------------------------
 |                CSC                 |  X |
 --------------------------------------    |
@@ -28,6 +29,7 @@ A Drone has three main objectives:
 --------------------------------------    |
 |               DRONES               |  P |
 -------------------------------------------
+```
 
 [IV] Conviso Standard XML
 
@@ -37,6 +39,8 @@ A Drone has three main objectives:
 
 
 
-[*] References
-[1] http://en.wikipedia.org/wiki/Software_agent
+References
+
+
+(1) http://en.wikipedia.org/wiki/Software_agent
 
