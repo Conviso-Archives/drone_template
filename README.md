@@ -132,6 +132,12 @@ Each Drone has to have its own XMPP credential. For instance, a Drone inside a c
 
 If our hypothetical Client *Lhebs* has a project called *LHB_00001* we should configure a source entry to *- project_id: LHB_00001*. The tag *input_directory* should especify the directory which contains the output file for the analysed tool, for instance: *- input_directory: input/tool/*.
 
+## Analysis Modules
+
+Each Drone can have severals analysis modules. Analysis modules are plugins that perform some action over issues collected by the drone before send to the Importer. There are two categories for analysis modules: 
+
+ - individual analysis: Analyse each issue isolated from the others. Perform changes at the field of each issue. Return "nil" in case the analysis determine that the issue should be deleted.
+ - bulk analysis: Analyse all issues found inside a specific input file. 
 
 ## Testing - Validator
 
