@@ -75,7 +75,7 @@ Each message can hold a XML containing one or more vulnerabilities to be importe
 
 All Drones are composed by five main basic components:
 
-  - a parser for the output of the tool; For instance, if the tool produces big XMLs use a SAX approach otherwise a DOM approach;
+  - a parser for the output of the tool; For instance, if the tool produces big XMLs use a SAX approach otherwise a DOM approach. This parser should generate a structure according [Issue Internal Format](#issue-internal-format);
     - [lib/parse/sax/tool.rb](lib/parse/sax/tool.rb) or [lib/parse/dom/tool.rb](lib/parse/dom/tool.rb)
   - a XML generator which generates the [Conviso Standard XML](#conviso-standard-xml);
     - [lib/parse/writer/conviso.rb](lib/parse/writer/conviso.rb)
@@ -87,6 +87,38 @@ All Drones are composed by five main basic components:
     - [lib/output/debug.rb](lib/output/debug.rb) 
 
 
+## Issue Internal Format
+
+As said before, every drone parse an output format and generates an structure in memory. This structure should follow a standard in order the Drone can understand every field inside an _issue_. The structure should be composed *at least* by the following fields:
+
+```ruby
+standard_internal_format = {
+:tool_name => "Tool Name",
+:duration => "32421", # Time amound in seconds
+:start_time => "32421312312", # Unix TimeStamp
+:issues=>[
+{:url=>"http://www.test.com/", 
+ :name=>"Blind SQL Injection", 
+ :description=>"Description for Blind SQL Injection", 
+ :cwe=>"89", 
+ :cwe_url=>"http://cwe.mitre.org/data/definitions/89.html", 
+ :severity=>"High", 
+ :remedy_guidance=>"",   
+ :_hash=>"9ea60ac56efec967be775c046261de10b4b5440beffdcd0ec52fe2e30305d19d",
+ :reference=>"http://www.owasp.org/index.php/Blind_SQL_Injection", 
+ :affected_component=>"URL: http://www.test.com/portada/\nElemento: cookie\nMetodo: GET"
+}, {
+  # ... Other Issue
+},
+{ 
+  # ... Other Issue
+}],
+}
+
+
+```
+
+In order to take advantage of all analysis modules produced along the history of Drones your parse should produce the Issue Internal Format as output.
 
 ## Drone Configuration File
 
@@ -134,10 +166,52 @@ If our hypothetical Client *Lhebs* has a project called *LHB_00001* we should co
 
 ## Analysis Modules
 
-Each Drone can have severals analysis modules. Analysis modules are plugins that perform some action over issues collected by the drone before send to the Importer. There are two categories for analysis modules: 
+Each Drone can have severals analysis modules. Analysis modules are plugins which perform some action over issues collected by the drone before send to the Importer. There are two categories for analysis modules: 
 
  - individual analysis: Analyse each issue isolated from the others. Perform changes at the field of each issue. Return "nil" in case the analysis determine that the issue should be deleted.
- - bulk analysis: Analyse all issues found inside a specific input file. 
+ - bulk analysis: Analyse all issues found inside a specific input file. This kind of analysis is mainly used for performing correlation analysis. 
+
+All analysis plugins should be installed inside the [Analysis Directory](lib/analysis) and in order to be loaded by the Drone have to be compliant with some standards: 
+
+ - Module name: "SOMETHING_analysis.rb" (e.g. "blacklist_analysis" or "replace_analysis")
+ - All plugins expect receive a issue or a set of issues which each issue use the [Issue Internal Format](#issue-internal-format)
+ - If a individual analysis plugin returns a empty hash ("{}") the current analysed issue will be ignored by the Drone.
+ - All Analysis modules should extend the "[Analysis Interface](lib/analysis/interface.rb)"
+
+An individual analysis module should have the following pattern: 
+
+```ruby
+require File.join(File.dirname(__FILE__), 'interface')
+
+module Analysis
+  class AnalysisName < Analysis::Interface
+    def analyse (issue = nil)
+    	# Do some action with the issue, like change its title
+    	issue[:title] = 'new title'
+    	return issue # return the modified issue
+    end
+  end
+end
+```
+
+An bulk analisys module should have the following pattern:
+
+```ruby
+require File.join(File.dirname(__FILE__), 'interface')
+
+module Analysis
+  class AnalysisName < Analysis::Interface
+    def bulk_analyse (issues = [])
+    	# Do some action with the issues, like insert a counter in the begin of each title
+    	new_issues = issues.collect {|i| i[:title] = "[#{issues.index(i)}] #{i[:title]}"}
+    	return new_issues # Return a list of modified issues
+    end
+  end
+end
+```
+
+Observe that all plugins should have an "analyse" or a "bulk_analyse" method which receives a issue or a list of issues respectively.
+
 
 ## Testing - Validator
 
