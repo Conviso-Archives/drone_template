@@ -187,7 +187,7 @@ module Analysis
   class AnalysisName < Analysis::Interface
     def analyse (issue = nil)
     	# Do some action with the issue, like change its title
-    	issue[:title] = 'new title'
+    	issue[:name] = 'new title'
     	return issue # return the modified issue
     end
   end
@@ -203,7 +203,7 @@ module Analysis
   class AnalysisName < Analysis::Interface
     def bulk_analyse (issues = [])
     	# Do some action with the issues, like insert a counter in the begin of each title
-    	new_issues = issues.collect {|i| i[:title] = "[#{issues.index(i)}] #{i[:title]}"}
+    	new_issues = issues.collect {|i| i[:name] = "[#{issues.index(i)}] #{i[:name]}"}
     	return new_issues # Return a list of modified issues
     end
   end
@@ -211,6 +211,18 @@ end
 ```
 
 Observe that all plugins should have an "analyse" or a "bulk_analyse" method which receives a issue or a list of issues respectively.
+
+Each analysis module has a specific session inside the configuration file named with its name. For instance the "blacklist_analysis" module has the follow configuration:
+
+```yaml
+
+analysis:
+  blacklist:
+    - ISSUE_NAME_HASH
+    - ISSUE_NAME_HASH
+
+```
+For more details see the [Default Configuration File](config.yml.default) as an example.
 
 
 ## Testing - Validator
