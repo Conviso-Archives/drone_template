@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), 'interface')
 require 'digest/sha1'
 
 module Analysis
-  class Aggregation < Analysis::Interface::BulkAnalysis
+  class Aggregation < Analysis::Interface::Bulk
     def analyse(issues = [])
       new_issues = {}
       issues.each do |i|

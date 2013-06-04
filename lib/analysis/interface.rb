@@ -1,6 +1,6 @@
 module Analysis
   module Interface
-    class BulkAnalysis
+    class Bulk
       attr_accessor :config, :debug
       def initialize (config = nil, debug = nil)
         @config = config
@@ -21,7 +21,7 @@ module Analysis
       end
     end
     
-    class IndividualAnalysis
+    class Individual
       attr_accessor :config, :debug
       def initialize (config = nil, debug = nil)
         @config = config

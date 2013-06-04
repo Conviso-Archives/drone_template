@@ -173,12 +173,13 @@ Each Drone can have severals analysis modules. Analysis modules are plugins whic
 
 All analysis plugins should be installed inside the [Analysis Directory](lib/analysis) and in order to be loaded by the Drone have to be compliant with some standards: 
 
- - Module name: "SOMETHING_analysis.rb" (e.g. "blacklist_analysis" or "replace_analysis")
+ - Module name: "SOMETHING_analysis.rb" (e.g. "blacklist_analysis" or "replace_analysis");
  - All plugins expect receive a issue or a set of issues; 
  - Each issue should be formatted as specified by the [Issue Internal Format](#issue-internal-format) Document;
- - If a individual analysis plugin returns a empty hash ("{}") the current analysed issue will be ignored by the Drone.
- - All Analysis modules should extend the "[Analysis Interface](lib/analysis/interface.rb)"
- - A Bulk analysis module should have a constant named "BULK";
+ - If a individual analysis plugin returns a empty hash ("{}") the current analysed issue will be ignored by the Drone;
+ - All Analysis modules should extend an "[Analysis Interface](lib/analysis/interface.rb)";
+ - If the module implements an Individual Analysis it should extend the Analysis::Interface::Individual class;
+ - If the module implements a Bulk Analysis it should extend the Analysis::Interface::Bulk class.
 
 An individual analysis module should have the following pattern: 
 
@@ -186,7 +187,7 @@ An individual analysis module should have the following pattern:
 require File.join(File.dirname(__FILE__), 'interface')
 
 module Analysis
-  class AnalysisName < Analysis::Interface
+  class AnalysisName < Analysis::Interface::Individual
     def analyse (issue = nil)
     	# Do some action with the issue, like change its title
     	issue[:name] = 'new title'
@@ -202,7 +203,7 @@ An bulk analisys module should have the following pattern:
 require File.join(File.dirname(__FILE__), 'interface')
 
 module Analysis
-  class AnalysisName < Analysis::Interface
+  class AnalysisName < Analysis::Interface::Bulk
 	BULK  # THIS CONSTANT INDICATES THAT THIS MODULE IS A BULK MODULE
 
     def analyse (issues = [])
