@@ -91,13 +91,13 @@ module Drone
     private
     def __sent_structure(tool_structure, source)
       # EXECUTES ALL BULK ANALYSES
-      @analyses.select {|a| a.class.constants.include?(:BULK)}.each {|a| tool_structure[:issues] = a.bulk_analyse(tool_structure[:issues])}
+      @analyses.select {|a| a.class.superclass == Analysis::Interface::BulkAnalysis}.each {|a| tool_structure[:issues] = a._analyse(tool_structure[:issues])}
       
       # SEND EACH ISSUE INDIVIDUALLY TO THE SERVER
       # THE "source" STRUCTURE CONTAINS A TUPLE WITH (CLIENT_ID, PROJECT_ID)
       response = tool_structure[:issues].collect do |issue|
         # EXECUTES ALL INDIVIDUAL ANALYSES
-        @analyses.select {|a| !a.class.constants.include?(:BULK)}.each {|a| issue = a.individual_analyse(issue)}
+        @analyses.select {|a| !a.class.superclass == Analysis::Interface::IndividualAnalysis}.each {|a| issue = a._analyse(issue)}
         
         # SEND THE MSG WITH THE ISSUE
         source['tool_name'] = @config['tool_name']
