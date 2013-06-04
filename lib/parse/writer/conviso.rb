@@ -6,12 +6,11 @@ module Parse
     class Conviso
       def self.build_xml(issue, config)
         xml = Builder::XmlMarkup.new( :ident => 2)
-        xml.instruct! :xml, :encoding => 'ASCII'
+        xml.instruct! :xml, :encoding => 'UTF-8'
 
         xml.scan do |s|
           s.header do |h|
             h.tool config['tool_name']
-            h.scope config['client']
             h.project config['project_id']
             h.timestamp Time.now
           end
@@ -22,7 +21,7 @@ module Parse
               v.title Base64.encode64(issue[:name].to_s)
               v.description Base64.encode64("#{issue[:url]} \n\n #{issue[:description]}")
               v.optional do |vo|
-                vo.affected_component Base64.encode64(issue[:affected_component])
+                vo.affected_component Base64.encode64(issue[:affected_component].to_s)
                 vo.control Base64.encode64("#{issue[:remedy_guidance]} \n #{issue[:remedy_code]}")
                 vo.reference Base64.encode64(issue[:reference].to_s)
                 vo.reproduction Base64.encode64("#{issue[:cwe]} - #{issue[:cwe_url]}")

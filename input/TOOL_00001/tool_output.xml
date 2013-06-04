@@ -9,14 +9,14 @@
 		<start_datetime>Mon Mar 25 13:49:21 2013</start_datetime>
 		<finish_datetime>Mon Mar 25 14:56:38 2013</finish_datetime>
 		<delta_time>01:07:17</delta_time>
-		<url>http://www.terra.com.pe/</url>
+		<url>http://www.test.com/</url>
 		<user_agent>Arachni/v0.4.1.3</user_agent>
 	</system>
 
 	<issues>
 
 		<issue>
-			<url>http://www.terra.com.pe/portada/</url>
+			<url>http://www.test.com/</url>
 			<name>Blind SQL Injection</name>
 			<description>SQL code can be injected into the </description>
 			<cwe>CWE_CODE</cwe>
@@ -26,7 +26,7 @@
 		</issue>
 
 		<issue>
-			<url>http://www.terra.com.pe/portada/2</url>
+			<url>http://www.test.com.pe/portada/2</url>
 			<name>XSS</name>
 			<description>Cross site script</description>
 			<cwe>CWE_CODE_01</cwe>

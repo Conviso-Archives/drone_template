@@ -3,7 +3,9 @@ require 'digest/sha1'
 
 module Analysis
   class Aggregation < Analysis::Interface
-    def bulk_analyse(issues = [])
+    BULK
+
+    def analyse(issues = [])
       new_issues = {}
       issues.each do |i|
         if new_issues[i[:name]].nil?
