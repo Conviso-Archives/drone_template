@@ -174,9 +174,11 @@ Each Drone can have severals analysis modules. Analysis modules are plugins whic
 All analysis plugins should be installed inside the [Analysis Directory](lib/analysis) and in order to be loaded by the Drone have to be compliant with some standards: 
 
  - Module name: "SOMETHING_analysis.rb" (e.g. "blacklist_analysis" or "replace_analysis")
- - All plugins expect receive a issue or a set of issues which each issue use the [Issue Internal Format](#issue-internal-format)
+ - All plugins expect receive a issue or a set of issues; 
+ - Each issue should be formatted as specified by the [Issue Internal Format](#issue-internal-format) Document;
  - If a individual analysis plugin returns a empty hash ("{}") the current analysed issue will be ignored by the Drone.
  - All Analysis modules should extend the "[Analysis Interface](lib/analysis/interface.rb)"
+ - A Bulk analysis module should have a constant named "BULK";
 
 An individual analysis module should have the following pattern: 
 
@@ -201,7 +203,9 @@ require File.join(File.dirname(__FILE__), 'interface')
 
 module Analysis
   class AnalysisName < Analysis::Interface
-    def bulk_analyse (issues = [])
+	BULK  # THIS CONSTANT INDICATES THAT THIS MODULE IS A BULK MODULE
+
+    def analyse (issues = [])
     	# Do some action with the issues, like insert a counter in the begin of each title
     	new_issues = issues.collect {|i| i[:name] = "[#{issues.index(i)}] #{i[:name]}"}
     	return new_issues # Return a list of modified issues
@@ -210,7 +214,7 @@ module Analysis
 end
 ```
 
-Observe that all plugins should have an "analyse" or a "bulk_analyse" method which receives a issue or a list of issues respectively.
+Observe that all plugins should have an "analyse" method which receives a issue (individual analysis module) or a list of issues (bulk analysis module).
 
 Each analysis module has a specific session inside the configuration file named with its name. For instance the "blacklist_analysis" module has the follow configuration:
 
