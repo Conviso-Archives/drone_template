@@ -41,8 +41,6 @@ module Analysis
         raise raise AnalyseException, "analyse() method should be implemented"
       end
     end
-      
-
     
   end
   

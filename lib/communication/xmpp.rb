@@ -36,7 +36,7 @@ module Communication
         return false
       end
 
-      sleep 0.8
+      sleep 2
       return true
     end
     

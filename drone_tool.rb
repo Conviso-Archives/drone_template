@@ -104,7 +104,6 @@ module Drone
         ret = @comm.send_msg(Parse::Writer::Conviso.build_xml(issue, source))
         
         if @config['xmpp']['importer_address'] =~ /validator/
-          sleep 2
           msg = @comm.receive_msg
           ret = false
           if msg =~ /[OK]/
