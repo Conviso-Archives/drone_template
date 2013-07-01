@@ -20,6 +20,7 @@ require 'digest/md5'
 module Analysis
   class Template < Analysis::Interface::Individual
     def analyse(issue = nil)
+      return issue if @config.nil?
       @config.keys.each do |k|
         if Digest::MD5.hexdigest(issue[:name]) =~ /#{k}/i
           issue[:template_id] = @config[k]

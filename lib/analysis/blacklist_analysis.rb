@@ -20,6 +20,7 @@ require 'digest/md5'
 module Analysis
   class Blacklist < Analysis::Interface::Individual
     def analyse(issue = nil)
+      return issue if @config.nil?
       if Digest::MD5.hexdigest(issue[:name]) =~ /(#{@config.join('|')})/i
         @debug.info("The issue #{issue[:_hash]} was blacklisted")
         return {}

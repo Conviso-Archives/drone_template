@@ -20,6 +20,7 @@ module Analysis
   class Replace < Analysis::Interface::Individual
 
     def analyse(issue = nil)
+      return issue if @config.nil?
       @config.select{|k,v| v == 'none'}.each {|k,v| @config[k] = ''}
       issue.keys.each do |k|
         @config.each {|k2,v| issue[k].to_s.gsub!(/#{k2.to_s}/i, v)} 
