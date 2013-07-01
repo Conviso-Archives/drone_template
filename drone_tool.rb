@@ -147,8 +147,8 @@ module Drone
       # VALIDATES IF INPUT DIRECTORIES FOR ALL SOURCES
       @config['sources'].each do |s|
         if !Dir.exists?(s['input_directory'].to_s)
-	        @debug.error("Input directory #{s['input_directory']}does not exist.")
-	        exit
+	        @debug.error("Input directory #{s['input_directory']} does not exist.")
+	        @config['sources'].delete(s['input_directory'].to_s)
         end
       end
       
