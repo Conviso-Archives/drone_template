@@ -124,7 +124,7 @@ module Drone
         if @config['xmpp']['importer_address'] =~ /validator/
           msg = @comm.receive_msg
           ret = false
-          if msg =~ /[OK]/
+          if msg =~ /\[OK\]/
             @debug.info('VALIDATOR - THIS MESSAGE IS VALID')
           else
             @debug.info('VALIDATOR - THIS MESSAGE IS INVALID')
