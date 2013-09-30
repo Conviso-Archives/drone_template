@@ -115,7 +115,7 @@ module Drone
       # THE "source" STRUCTURE CONTAINS A TUPLE WITH (CLIENT_ID, PROJECT_ID)
       response = tool_structure[:issues].collect do |issue|
         # EXECUTES ALL INDIVIDUAL ANALYSES
-        @analyses.select {|a| !a.class.superclass == Analysis::Interface::Individual}.each {|a| issue = a._analyse(issue)}
+        @analyses.select {|a| a.class.superclass == Analysis::Interface::Individual}.each {|a| issue = a._analyse(issue)}
         
         # SEND THE MSG WITH THE ISSUE
         source['tool_name'] = @config['tool_name']
